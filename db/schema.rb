@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_24_095929) do
+ActiveRecord::Schema.define(version: 2022_04_24_100317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,14 @@ ActiveRecord::Schema.define(version: 2022_04_24_095929) do
     t.string "bank"
     t.string "branch"
     t.integer "account_number"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "description"
+    t.string "text"
+    t.integer "rate"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -43,6 +51,15 @@ ActiveRecord::Schema.define(version: 2022_04_24_095929) do
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
+  create_table "items", force: :cascade do |t|
+    t.bigint "category_id", null: false
+    t.bigint "invoice_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["category_id"], name: "index_items_on_category_id"
+    t.index ["invoice_id"], name: "index_items_on_invoice_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -59,5 +76,7 @@ ActiveRecord::Schema.define(version: 2022_04_24_095929) do
 
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "users"
+  add_foreign_key "items", "categories"
+  add_foreign_key "items", "invoices"
   add_foreign_key "users", "bank_accounts"
 end
